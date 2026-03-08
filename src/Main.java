@@ -7,7 +7,7 @@ public class Main {
         DictionaryService dictionaryService = new DictionaryService();
         Dictionary dictionary = dictionaryService.getDictionary();
         CheckerService checkerService = new CheckerService();
-        checkerService.startChecking(dictionary, 10);
+        checkerService.startChecking(dictionary, 50);
     }
 
 }

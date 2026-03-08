@@ -7,8 +7,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class CheckerService {
 
@@ -17,29 +17,32 @@ public class CheckerService {
     public static final String GREEN = "\u001B[32m";
     public static final String RESET = "\u001B[0m";
 
-    private final Random randomizer = new Random();
-
     public void startChecking(Dictionary dictionary, int checksCount) {
         int rightAnswers = 0;
 
-        for (int i = 0; i < checksCount; i++) {
-            int index = randomizer.nextInt(dictionary.getWords().size());
-            WordCard wordCard = dictionary.getWords().get(index);
-            outQuestion(wordCard.getWord(), i);
-            String answer = inputAnswer();
-            boolean isCorrect = isAnswerCorrect(wordCard, answer);
+        Collections.shuffle(dictionary.getWords());
 
+        for (int i = 0; i < checksCount; i++) {
+            int index = i < dictionary.getWords().size() ? i : i - dictionary.getWords().size();
+            WordCard wordCard = dictionary.getWords().get(index);
+            boolean isCorrect = check(wordCard, i);
             if (isCorrect) {
-                System.out.println(GREEN + "Right." + RESET);
+                System.out.println(GREEN + wordCard.getMeanings() + RESET);
                 ++rightAnswers;
             } else {
-                System.out.println(RED + "Wrong. Right answer - " + wordCard.getMeanings() + RESET);
+                System.out.println(RED + wordCard.getMeanings() + RESET);
             }
         }
 
         System.out.println("--------------------");
         System.out.printf("Result: %s/%s", rightAnswers, checksCount);
 
+    }
+
+    private boolean check(WordCard wordCard, int i) {
+        outQuestion(wordCard.getWord(), i);
+        String answer = inputAnswer();
+        return isAnswerCorrect(wordCard, answer);
     }
 
     private void outQuestion(String word, int number) {
