@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class CheckerService {
 
     public void startChecking(Dictionary dictionary, int checksCount) {
         int rightAnswers = 0;
+        List<String> wrongAnswers = new ArrayList<>();
 
         Collections.shuffle(dictionary.getWords());
 
@@ -31,12 +33,10 @@ public class CheckerService {
                 ++rightAnswers;
             } else {
                 System.out.println(RED + wordCard.getMeanings() + RESET);
+                wrongAnswers.add(wordCard.getWord());
             }
         }
-
-        System.out.println("--------------------");
-        System.out.printf("Result: %s/%s", rightAnswers, checksCount);
-
+        outResult(rightAnswers, checksCount, wrongAnswers);
     }
 
     private boolean check(WordCard wordCard, int i) {
@@ -63,5 +63,13 @@ public class CheckerService {
     private boolean isAnswerCorrect(WordCard wordCard, String answer) {
         List<String> meanings = wordCard.getMeanings();
         return meanings.contains(answer);
+    }
+
+    private void outResult(int rightAnswers, int checksCount, List<String> wrongAnswers) {
+        System.out.println("--------------------");
+        System.out.printf("Result: %s/%s%n", rightAnswers, checksCount);
+        if (!wrongAnswers.isEmpty()) {
+            System.out.println("Wrong answers: " + wrongAnswers);
+        }
     }
 }
